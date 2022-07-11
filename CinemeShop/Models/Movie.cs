@@ -1,4 +1,5 @@
 ﻿using CinemeShop.Data;
+using CinemeShop.Data.Basa;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CinemeShop.Models
 {
-    public class Movie
+    public class Movie : IEntityBase
     {
         [Key]
         public int Id { get; set; }

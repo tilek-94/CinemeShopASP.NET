@@ -1,8 +1,13 @@
 using CinemeShop.Data;
+using CinemeShop.Data.Cart;
 using CinemeShop.Data.Services;
+using CinemeShop.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +33,23 @@ namespace CinemeShop
         {
             services.AddDbContext<AppDbContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddControllersWithViews();
-            services.AddScoped<IServiceActor,ServiceActor>();
+            services.AddScoped<IActorService,ActorService>();
+            services.AddScoped<ICinemaService,CinemaService>();
+            services.AddScoped<IProducerService,ProducerServise>();
+            services.AddScoped<IMovieService,MovieService>();
+            services.AddScoped<IOrdersService,OrdersService>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+            
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+            services.AddMemoryCache();
+            services.AddSession();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            });
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,8 +69,13 @@ namespace CinemeShop
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
+            //Authentication & Authorization
+            app.UseAuthentication();
             app.UseAuthorization();
+
+         
 
             app.UseEndpoints(endpoints =>
             {
@@ -58,6 +84,7 @@ namespace CinemeShop
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
             AppDbInitializer.Seed(app);
+            AppDbInitializer.SeedUsersAndRolesAsync(app).Wait();
         }
     }
 }

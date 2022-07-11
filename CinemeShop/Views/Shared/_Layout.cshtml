@@ -18,31 +18,37 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between ">
-                    <ul class="navbar-nav flex-grow-0">
-                        <li class="navbar-nav flex-grow-1">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Movies" asp-action="Index"> <i class="badge-info bi-film"></i>  Movies</a>
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Movies" asp-action="Index"><i class="bi bi-film"></i> Movies</a>
                         </li>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <div class="dropdown show">
+                                    <a class="nav-link  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="bi bi-gear"></i>  
+                                        Managment
+                                    </a>
 
-                         <li class="nav-item dropdown">
-                             <div class="dropdown show">
-                                  <a class="nav-link  dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-gear"></i>  
-                                    Managment
-                                  </a>
-
-                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" asp-controller="Cinemas" asp-action="Index"><i calss="bi bi-camera-reels"></i>Cinema</a>
-                                <a class="dropdown-item" asp-controller="Producers" asp-action="Index"><i calss="bi bi-headset"></i>Producer</a>
-                                <a class="dropdown-item" asp-controller="Actor" asp-action="Index"><i calss="bi bi-person-square"></i>Actor</a>
-                                  </div>
-                            </div>
-                        </li>
-                       
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" asp-controller="Cinemas" asp-action="Index"><i calss="bi bi-camera-reels"></i>Cinema</a>
+                                        <a class="dropdown-item" asp-controller="Producers" asp-action="Index"><i calss="bi bi-headset"></i>Producer</a>
+                                        <a class="dropdown-item" asp-controller="Actor" asp-action="Index"><i calss="bi bi-person-square"></i>Actor</a>
+                                    </div>
+                                </div>
+                            </li>
+                        }
                     </ul>
-                    <form class="form-inline my-2 my-lg-0"  asp-controller="Movies" asp-action="Filter" style="padding-right:25px;">
+                       <form class="form-inline my-2 my-lg-0"  asp-controller="Movies" asp-action="Filter" style="padding-right:25px;">
                         <input name="searchString" type="text" class="form-control" palaceholder="Search for a movie..." />
                         <button class ="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="bi bi-search"></i></button> 
-                    </form>
+                      </form>
+                    <ul class="navbar-nav">
+                        @await Component.InvokeAsync("ShoppingCartSummary")
+                    </ul>
+               <partial name="IdentityPartial.cshtml" />         
+                    
                 </div>
             </div>
         </nav>

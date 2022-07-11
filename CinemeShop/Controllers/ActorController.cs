@@ -1,21 +1,24 @@
 ﻿using CinemeShop.Data;
 using CinemeShop.Data.Services;
+using CinemeShop.Data.Static;
 using CinemeShop.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CinemeShop.Controllers
 {
+    [Authorize(Roles = UserRoles.Admin)]
     public class ActorController : Controller
     {
-        private readonly IServiceActor _service;
+        private readonly IActorService _service;
 
-        public ActorController(IServiceActor service)
+        public ActorController(IActorService service)
         {
             _service = service;
         }
-
+        [AllowAnonymous]
         public async Task< IActionResult> Index()
         {
             var data = await _service.GetAllAsync();
@@ -35,6 +38,7 @@ namespace CinemeShop.Controllers
            await _service.AddAsync(actor);
             return RedirectToAction(nameof(Index));
         }
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             var actorDetails = await _service.GetByIdAsync(id);
